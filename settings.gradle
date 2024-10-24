@@ -1,0 +1,4 @@
+rootProject.name = 'hotdeal-notifier'
+include 'api'
+include 'common'
+
