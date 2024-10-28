@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,9 @@ public class HotDealDetector {
                 .collect(Collectors.toMap(HotDealCrawler::getPlatform, v -> Collections.emptyList()));
     }
 
-    public void detect() {
+    public List<HotDeal> detect() {
         Set<Platform> platforms = hotDealCrawlerMap.keySet();
+        List<HotDeal> newHotDealTotalList = new ArrayList<>();
         for (Platform platform : platforms) {
             log.info("{} 크롤링 시작 {}", platform.getText(), LocalDateTime.now());
             HotDealCrawler hotDealCrawler = hotDealCrawlerMap.get(platform);
@@ -43,7 +45,9 @@ public class HotDealDetector {
             newHotDealList.forEach(newHotDeal -> log.info(newHotDeal.toString()));
             log.info("새 핫딜 총 개수 {}", newHotDealList.size());
             savedHotDealMap.put(platform, newHotDealList);
+            newHotDealTotalList.addAll(newHotDealList);
         }
+        return newHotDealTotalList;
     }
 
     private List<HotDeal> getNewHotDealList(List<HotDeal> hotDealList, List<HotDeal> savedHotDealList) {
