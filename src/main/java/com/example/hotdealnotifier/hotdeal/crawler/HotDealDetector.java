@@ -41,6 +41,7 @@ public class HotDealDetector {
             List<HotDeal> newHotDealList = getNewHotDealList(hotDealList, savedHotDealList);
 
             newHotDealList.forEach(newHotDeal -> log.info(newHotDeal.toString()));
+            log.info("새 핫딜 총 개수 {}", newHotDealList.size());
             savedHotDealMap.put(platform, newHotDealList);
         }
     }

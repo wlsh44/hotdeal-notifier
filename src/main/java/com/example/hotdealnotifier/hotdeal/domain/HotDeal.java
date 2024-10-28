@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "image")
 public class HotDeal {
 
     private String title;
