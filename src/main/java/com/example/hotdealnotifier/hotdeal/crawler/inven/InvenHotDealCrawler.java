@@ -1,4 +1,4 @@
-package com.example.hotdealnotifier.hotdeal.crawler.arcalive;
+package com.example.hotdealnotifier.hotdeal.crawler.inven;
 
 import com.example.hotdealnotifier.hotdeal.crawler.HotDealCrawler;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
@@ -15,18 +15,18 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class ArcaLiveHotDealCrawler implements HotDealCrawler {
+public class InvenHotDealCrawler implements HotDealCrawler {
 
-    private static final String BASE_URL = "https://arca.live";
+    private static final String BASE_URL = "https://party.inven.co.kr";
 
     @Override
     public List<HotDeal> crawl() {
         try {
-            Document document = Jsoup.connect(BASE_URL + "/b/hotdeal").get();
+            Document document = Jsoup.connect(BASE_URL + "/hotdeal/list/").get();
 
-            Element hotDealElementList = document.select("div.list-table").first();
+            Element hotDealElementList = document.select("div.list-board").first();
 
-            return hotDealElementList.select("div.hybrid.vrow").stream()
+            return hotDealElementList.select("div.list-item").stream()
                     .map(this::createHotDeal)
                     .toList();
         } catch (IOException e) {
@@ -36,7 +36,7 @@ public class ArcaLiveHotDealCrawler implements HotDealCrawler {
 
     @Override
     public Platform getPlatform() {
-        return Platform.ARCA_LIVE;
+        return Platform.INVEN;
     }
 
     private HotDeal createHotDeal(Element hotDeal) {
@@ -52,38 +52,35 @@ public class ArcaLiveHotDealCrawler implements HotDealCrawler {
                 .image(image)
                 .price(price)
                 .shoppingMall(shoppingMall)
-                .platform(Platform.ARCA_LIVE)
+                .platform(Platform.INVEN)
                 .build();
     }
 
     private String getImage(Element hotDeal) {
-        return "https:" + hotDeal.select("a.preview-image").first()
+        return hotDeal.select("a.thumbnail").first()
                 .select("img").first()
                 .attr("src");
     }
 
     private String getUrl(Element hotDeal) {
-        return BASE_URL + hotDeal.select("a.preview-image").first()
+        return hotDeal.select("a.thumbnail").first()
                 .attr("href");
     }
 
     private String getPrice(Element hotDeal) {
-        return hotDeal.select("span.deal-price").first()
-                .text()
-                .trim();
+        return hotDeal.select("p.price").first()
+                .text();
     }
 
     private String getTitle(Element hotDeal) {
-        Elements select = hotDeal.select("span.col-title").first()
-                .select("a.title");
-        return select.first()
+        return hotDeal.select("div.title").first()
+                .select("a").first()
                 .ownText()
                 .trim();
     }
 
     private String getShoppingMall(Element hotDeal) {
-        return hotDeal.select("div.deal").first()
-                .select("span.deal-store").first()
+        return hotDeal.select("p.shop").first()
                 .text();
     }
 }

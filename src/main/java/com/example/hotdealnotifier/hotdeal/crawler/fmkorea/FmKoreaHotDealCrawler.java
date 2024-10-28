@@ -5,6 +5,7 @@ import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -19,12 +21,14 @@ import java.util.List;
 public class FmKoreaHotDealCrawler implements HotDealCrawler {
 
     public static final String BASE_URL = "https://www.fmkorea.com";
-
+    private String phpsessid = "";
     @Override
     public List<HotDeal> crawl() {
         try {
-            Document document = Jsoup.connect(BASE_URL + "/hotdeal")
-                    .cookie("PHPSESSID", "mp4s9lhg71i3mfb3kj3j1i9i02").get();
+            Connection.Response response = Jsoup.connect(BASE_URL + "/hotdeal")
+                    .cookie("PHPSESSID", phpsessid).execute();
+            this.phpsessid = Objects.isNull(response.cookie("PHPSESSID")) ? "" : response.cookie("PHPSESSID");
+            Document document = response.parse();
             Elements hotDealElementList = document.select("div.fm_best_widget")
                     .select("ul");
 
