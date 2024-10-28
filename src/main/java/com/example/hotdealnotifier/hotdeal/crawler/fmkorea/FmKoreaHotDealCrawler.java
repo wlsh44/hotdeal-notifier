@@ -37,6 +37,11 @@ public class FmKoreaHotDealCrawler implements HotDealCrawler {
         }
     }
 
+    @Override
+    public Platform getPlatform() {
+        return Platform.FM_KOREA;
+    }
+
     private HotDeal createHotDeal(Element hotDeal) {
         String url = getUrl(hotDeal);
         String image = getThumbnailImage(hotDeal);
