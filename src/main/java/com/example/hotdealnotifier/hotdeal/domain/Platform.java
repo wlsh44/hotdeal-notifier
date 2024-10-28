@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Platform {
 
-    FM_KOREA("에펨코리아"), QUASAR_ZONE("퀘이사존");
+    FM_KOREA("에펨코리아"), QUASAR_ZONE("퀘이사존"), ARCA_LIVE("아카라이브");
 
     private final String text;
 }
