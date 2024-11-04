@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -29,8 +30,9 @@ public class InvenHotDealCrawler implements HotDealCrawler {
             return hotDealElementList.select("div.list-item").stream()
                     .map(this::createHotDeal)
                     .toList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error("인벤 핫딜 크롤링 실패", e);
+            return Collections.emptyList();
         }
     }
 
@@ -46,14 +48,7 @@ public class InvenHotDealCrawler implements HotDealCrawler {
         String price = getPrice(hotDeal);
         String shoppingMall = getShoppingMall(hotDeal);
 //        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
-        return HotDeal.builder()
-                .title(title)
-                .url(url)
-                .image(image)
-                .price(price)
-                .shoppingMall(shoppingMall)
-                .platform(Platform.INVEN)
-                .build();
+        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
     }
 
     private String getImage(Element hotDeal) {

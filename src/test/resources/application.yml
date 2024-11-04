@@ -1,0 +1,44 @@
+spring:
+  profiles:
+    active: test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+    open-in-view: false
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;NON_KEYWORDS=USER;MODE=MYSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+
+jwt:
+  secret: omgomgomgomgomgomgomgomgomgomgomgomgomgomgomgomg
+
+auth:
+  free-apis:
+    /api/v1/auth/sign-in,/api/v1/auth/sign-up
+  admin-apis:
+    /api/v1/auth/admin/**, /api/v1/artists
+  admin:
+    secret:
+      omg
+
+spotify:
+  clientId: b89b24d090c146bc8558da5102baab34
+  secret: 9966b9397ec847aaa76db02ddfffd7f7
+
+server:
+  port: 8080
