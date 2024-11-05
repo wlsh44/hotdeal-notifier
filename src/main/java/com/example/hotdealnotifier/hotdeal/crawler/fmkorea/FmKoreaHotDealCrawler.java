@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +38,7 @@ public class FmKoreaHotDealCrawler implements HotDealCrawler {
                     .toList();
         } catch (Exception e) {
             log.error("에펨코리아 핫딜 크롤링 실패", e);
-            throw new RuntimeException(e);
+            return Collections.emptyList();
         }
     }
 
@@ -53,14 +54,7 @@ public class FmKoreaHotDealCrawler implements HotDealCrawler {
         String price = getPrice(hotDeal);
         String shoppingMall = getShoppingMall(hotDeal);
 //        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}", title, url, image, price);
-        return HotDeal.builder()
-                .title(title)
-                .image(image)
-                .price(price)
-                .shoppingMall(shoppingMall)
-                .platform(Platform.FM_KOREA)
-                .url(url)
-                .build();
+        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
     }
 
     private String getUrl(Element hotDeal) {
