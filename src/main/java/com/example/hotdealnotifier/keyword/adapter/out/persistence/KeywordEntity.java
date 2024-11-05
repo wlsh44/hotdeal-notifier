@@ -1,5 +1,6 @@
 package com.example.hotdealnotifier.keyword.adapter.out.persistence;
 
+import com.example.hotdealnotifier.common.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "KEYWORD")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KeywordEntity {
+public class KeywordEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
