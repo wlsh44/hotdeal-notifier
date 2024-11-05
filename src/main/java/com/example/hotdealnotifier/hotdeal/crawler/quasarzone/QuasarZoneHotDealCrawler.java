@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,8 +36,9 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
             return hotDealElementList.select("tr").stream()
                     .map(this::createHotDeal)
                     .toList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error("퀘이사존 핫딜 크롤링 실패", e);
+            return Collections.emptyList();
         }
     }
 
@@ -59,14 +61,7 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
         String title = matcher.group(2);
         String price = getPrice(hotDeal);
 //        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
-        return HotDeal.builder()
-                .title(title)
-                .url(url)
-                .image(image)
-                .shoppingMall(shoppingMall)
-                .price(price)
-                .platform(Platform.QUASAR_ZONE)
-                .build();
+        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
     }
 
     private String getPrice(Element hotDeal) {
