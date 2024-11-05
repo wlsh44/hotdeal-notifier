@@ -1,5 +1,6 @@
 package com.example.hotdealnotifier.hotdeal.adapter.out.persistence;
 
+import com.example.hotdealnotifier.common.jpa.BaseEntity;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "HOTDEAL")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class HotDealEntity {
+public class HotDealEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
