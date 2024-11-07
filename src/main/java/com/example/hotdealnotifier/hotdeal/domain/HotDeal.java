@@ -1,5 +1,6 @@
 package com.example.hotdealnotifier.hotdeal.domain;
 
+import com.example.hotdealnotifier.common.jpa.BaseEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,8 +9,8 @@ import java.util.List;
 
 @Getter
 @ToString
-@EqualsAndHashCode(of = "id")
-public class HotDeal {
+@EqualsAndHashCode(of = "id", callSuper = false)
+public class HotDeal extends BaseEntity {
 
     private HotDealId id;
     private String title;

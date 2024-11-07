@@ -19,6 +19,10 @@ public class Keyword {
         return new Keyword(keywordId, userId, keyword);
     }
 
+    public static Keyword of(String keyword, Long userId) {
+        return new Keyword(null, userId, keyword);
+    }
+
     public record KeywordId(Long value) {
     }
 }

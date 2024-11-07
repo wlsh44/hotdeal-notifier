@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: local
+
+discord:
+  bot:
+    token: ${DISCORD_BOT_TOKEN}
+  hotdeal:
+    channel: ${DISCORD_HOTDEAL_CHANNEL}
