@@ -1,6 +1,5 @@
 package com.example.hotdealnotifier.hotdeal.crawler;
 
-import com.example.hotdealnotifier.hotdeal.adapter.out.persistence.HotDealMapper;
 import com.example.hotdealnotifier.hotdeal.application.port.out.HotDealCommandPort;
 import com.example.hotdealnotifier.hotdeal.application.port.out.HotDealQueryPort;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
@@ -47,10 +46,10 @@ public class HotDealDetector {
             }
 
             List<HotDeal> newHotDealList = getNewHotDealList(hotDealList, savedHotDealList);
-            newHotDealList.forEach(newHotDeal -> log.info(newHotDeal.toString()));
-            log.info("새 핫딜 감지, 총 개수 {}", newHotDealList.size());
+//            newHotDealList.forEach(newHotDeal -> log.info(newHotDeal.toString()));
+            log.info("{} 새 핫딜 감지, 총 개수 {}", platform.getText(), newHotDealList.size());
 
-            hotDealCommandPort.saveHotDealCacheList(platform, newHotDealList);
+            hotDealCommandPort.saveHotDealCacheList(platform, hotDealList);
             newHotDealTotalList.addAll(newHotDealList);
         }
         return newHotDealTotalList;

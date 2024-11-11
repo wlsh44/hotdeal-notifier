@@ -9,8 +9,8 @@ import java.util.List;
 
 @Getter
 @ToString
-@EqualsAndHashCode(of = "id", callSuper = false)
-public class HotDeal extends BaseEntity {
+@EqualsAndHashCode(of = "id")
+public class HotDeal {
 
     private HotDealId id;
     private String title;

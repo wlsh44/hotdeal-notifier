@@ -3,6 +3,8 @@ package com.example.hotdealnotifier.hotdeal.adapter.out.persistence;
 import com.example.hotdealnotifier.common.jpa.BaseEntity;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,6 +33,7 @@ public class HotDealEntity extends BaseEntity {
 
     private String shoppingMall;
 
+    @Enumerated(EnumType.STRING)
     private Platform platform;
 
     @Builder

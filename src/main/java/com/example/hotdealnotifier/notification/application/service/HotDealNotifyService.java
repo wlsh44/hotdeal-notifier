@@ -2,6 +2,7 @@ package com.example.hotdealnotifier.notification.application.service;
 
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.NewHotDealDetectedEvent;
+import com.example.hotdealnotifier.notification.adapter.out.DiscordNotificationService;
 import com.example.hotdealnotifier.notification.domain.Notification;
 import com.example.hotdealnotifier.user.domain.User;
 import lombok.RequiredArgsConstructor;

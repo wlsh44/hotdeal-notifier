@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -31,11 +31,16 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
             Document document = Jsoup.connect(BASE_URL + "/bbs/qb_saleinfo").get();
 
             Elements hotDealElementList = document.select("div.market-type-list").first()
-                    .select("tbody");
+                    .select("tbody")
+                    .select("tr");
 
-            return hotDealElementList.select("tr").stream()
-                    .map(this::createHotDeal)
-                    .toList();
+            List<HotDeal> hotDealList = new ArrayList<>();
+            for (Element element : hotDealElementList) {
+                try {
+                    hotDealList.add(createHotDeal(element));
+                } catch (Exception ignored) {}
+            }
+            return hotDealList;
         } catch (Exception e) {
             log.error("퀘이사존 핫딜 크롤링 실패", e);
             return Collections.emptyList();
@@ -54,7 +59,7 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
 
         Matcher matcher = pattern.matcher(shoppingMallAndTitle);
         if (!matcher.matches()) {
-            throw new RuntimeException("퀘이사존 쇼핑몰, 타이틀 파싱 실패: [xx] xxx 형식이 아님");
+            throw new RuntimeException("퀘이사존 쇼핑몰, 타이틀 파싱 실패: [xx] xxx 형식이 아님, title: " + shoppingMallAndTitle);
         }
 
         String shoppingMall = matcher.group(1);

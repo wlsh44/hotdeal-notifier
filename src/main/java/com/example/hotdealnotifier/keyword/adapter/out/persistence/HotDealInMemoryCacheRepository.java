@@ -1,8 +1,5 @@
 package com.example.hotdealnotifier.keyword.adapter.out.persistence;
 
-import com.example.hotdealnotifier.hotdeal.application.port.out.HotDealCommandPort;
-import com.example.hotdealnotifier.hotdeal.application.port.out.HotDealQueryPort;
-import com.example.hotdealnotifier.hotdeal.crawler.HotDealCrawler;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import org.springframework.stereotype.Repository;
