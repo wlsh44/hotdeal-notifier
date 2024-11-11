@@ -21,8 +21,11 @@ public class UserEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String externalId;
+
     @Builder
-    private UserEntity(Long id) {
+    private UserEntity(Long id, String externalId) {
         this.id = id;
+        this.externalId = externalId;
     }
 }

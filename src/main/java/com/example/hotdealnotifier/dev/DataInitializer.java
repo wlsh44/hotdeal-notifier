@@ -6,8 +6,10 @@ import com.example.hotdealnotifier.user.application.port.out.UserCommandPort;
 import com.example.hotdealnotifier.user.domain.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+@Profile({"dev", "local"})
 @Component
 @RequiredArgsConstructor
 public class DataInitializer {
@@ -17,7 +19,7 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        User user = userCommandPort.save(new User());
+        User user = userCommandPort.save(new User("externalId"));
         keywordCommandPort.save(Keyword.of("k", user.getId().id()));
     }
 }

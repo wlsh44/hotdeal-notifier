@@ -14,14 +14,20 @@ public abstract class UserFixture extends BaseFixture {
 
     public static class UserBuilder {
         private Long id = getUniqueId();
+        private String externalId = "externalId";
 
         public UserBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
+        public UserBuilder externalId(String externalId) {
+            this.externalId = externalId;
+            return this;
+        }
+
         public User build() {
-            return User.withId(new User.UserId(id));
+            return User.withId(new User.UserId(id), externalId);
         }
     }
 }

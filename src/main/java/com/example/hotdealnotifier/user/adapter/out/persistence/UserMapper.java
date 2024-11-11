@@ -9,12 +9,13 @@ import java.util.Objects;
 public class UserMapper {
 
     public User mapToDomainEntity(UserEntity userEntity) {
-        return User.withId(new User.UserId(userEntity.getId()));
+        return User.withId(new User.UserId(userEntity.getId()), userEntity.getExternalId());
     }
 
     public UserEntity mapToJpaEntity(User user) {
         return UserEntity.builder()
                 .id(Objects.isNull(user.getId()) ? null : user.getId().id())
+                .externalId(user.getExternalId())
                 .build();
     }
 }

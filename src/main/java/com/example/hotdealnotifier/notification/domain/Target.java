@@ -5,12 +5,10 @@ import lombok.Getter;
 @Getter
 public class Target {
 
-    private final Long id;
     private final String name;
     private final String notificationId;
 
-    public Target(Long id, String name, String notificationId) {
-        this.id = id;
+    public Target(String name, String notificationId) {
         this.name = name;
         this.notificationId = notificationId;
     }
