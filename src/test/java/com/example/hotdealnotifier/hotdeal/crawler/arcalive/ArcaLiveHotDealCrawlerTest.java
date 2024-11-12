@@ -1,9 +1,8 @@
 package com.example.hotdealnotifier.hotdeal.crawler.arcalive;
 
+import com.example.hotdealnotifier.hotdeal.crawler.ArcaLiveHotDealCrawler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ArcaLiveHotDealCrawlerTest {
 

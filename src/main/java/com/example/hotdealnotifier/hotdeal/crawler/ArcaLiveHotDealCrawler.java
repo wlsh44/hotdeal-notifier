@@ -1,4 +1,4 @@
-package com.example.hotdealnotifier.hotdeal.crawler.arcalive;
+package com.example.hotdealnotifier.hotdeal.crawler;
 
 import com.example.hotdealnotifier.hotdeal.crawler.HotDealCrawler;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -29,6 +31,7 @@ public class ArcaLiveHotDealCrawler implements HotDealCrawler {
 
             return hotDealElementList.select("div.hybrid.vrow").stream()
                     .map(this::createHotDeal)
+                    .flatMap(Optional::stream)
                     .toList();
         } catch (Exception e) {
             log.error("아카라이브 핫딜 크롤링 실패", e);
@@ -41,20 +44,25 @@ public class ArcaLiveHotDealCrawler implements HotDealCrawler {
         return Platform.ARCA_LIVE;
     }
 
-    private HotDeal createHotDeal(Element hotDeal) {
-        String title = getTitle(hotDeal);
-        String url = getUrl(hotDeal);
-        String image = getImage(hotDeal);
-        String price = getPrice(hotDeal);
-        String shoppingMall = getShoppingMall(hotDeal);
-//        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
-        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
+    private Optional<HotDeal> createHotDeal(Element hotDeal) {
+        try {
+            String title = getTitle(hotDeal);
+            String url = getUrl(hotDeal);
+            String image = getImage(hotDeal);
+            String price = getPrice(hotDeal);
+            String shoppingMall = getShoppingMall(hotDeal);
+            log.debug("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
+            return Optional.of(HotDeal.of(title, url, price, image, shoppingMall, getPlatform()));
+        } catch (Exception e) {
+            log.warn("아카라이브 핫딜 파싱 실패", e);
+            return Optional.empty();
+        }
     }
 
     private String getImage(Element hotDeal) {
-        return "https:" + hotDeal.select("a.preview-image").first()
-                .select("img").first()
-                .attr("src");
+        Element img = hotDeal.select("a.preview-image").first()
+                .select("img").first();
+        return Objects.isNull(img) ? null : "https:" + img.attr("src");
     }
 
     private String getUrl(Element hotDeal) {
@@ -69,9 +77,8 @@ public class ArcaLiveHotDealCrawler implements HotDealCrawler {
     }
 
     private String getTitle(Element hotDeal) {
-        Elements select = hotDeal.select("span.col-title").first()
-                .select("a.title");
-        return select.first()
+        return hotDeal.select("span.col-title").first()
+                .select("a.title").first()
                 .ownText()
                 .trim();
     }

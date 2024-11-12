@@ -1,9 +1,8 @@
 package com.example.hotdealnotifier.hotdeal.crawler.quasarzone;
 
+import com.example.hotdealnotifier.hotdeal.crawler.QuasarZoneHotDealCrawler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class QuasarZoneHotDealCrawlerTest {
 

@@ -1,6 +1,5 @@
-package com.example.hotdealnotifier.hotdeal.crawler.fmkorea;
+package com.example.hotdealnotifier.hotdeal.crawler;
 
-import com.example.hotdealnotifier.hotdeal.crawler.HotDealCrawler;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -22,7 +22,8 @@ import java.util.Objects;
 public class FmKoreaHotDealCrawler implements HotDealCrawler {
 
     public static final String BASE_URL = "https://www.fmkorea.com";
-    private String phpsessid = "";
+    private String phpsessid = "mp4s9lhg71i3mfb3kj3j1i9i02";
+
     @Override
     public List<HotDeal> crawl() {
         try {
@@ -35,6 +36,7 @@ public class FmKoreaHotDealCrawler implements HotDealCrawler {
 
             return hotDealElementList.select("li").stream()
                     .map(this::createHotDeal)
+                    .flatMap(Optional::stream)
                     .toList();
         } catch (Exception e) {
             log.error("에펨코리아 핫딜 크롤링 실패", e);
@@ -47,14 +49,19 @@ public class FmKoreaHotDealCrawler implements HotDealCrawler {
         return Platform.FM_KOREA;
     }
 
-    private HotDeal createHotDeal(Element hotDeal) {
-        String url = getUrl(hotDeal);
-        String image = getThumbnailImage(hotDeal);
-        String title = getTitle(hotDeal);
-        String price = getPrice(hotDeal);
-        String shoppingMall = getShoppingMall(hotDeal);
-//        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}", title, url, image, price);
-        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
+    private Optional<HotDeal> createHotDeal(Element hotDeal) {
+        try {
+            String title = getTitle(hotDeal);
+            String url = getUrl(hotDeal);
+            String image = getImage(hotDeal);
+            String price = getPrice(hotDeal);
+            String shoppingMall = getShoppingMall(hotDeal);
+            log.debug("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
+            return Optional.of(HotDeal.of(title, url, price, image, shoppingMall, getPlatform()));
+        } catch (Exception e) {
+            log.warn("에펨코리아 핫딜 파싱 실패", e);
+            return Optional.empty();
+        }
     }
 
     private String getUrl(Element hotDeal) {
@@ -84,7 +91,7 @@ public class FmKoreaHotDealCrawler implements HotDealCrawler {
                 .ownText();
     }
 
-    private String getThumbnailImage(Element hotDeal) {
+    private String getImage(Element hotDeal) {
         Elements anchorAttribute = hotDeal.select("a");
         int imageIndex = anchorAttribute.get(0).hasClass("pc_voted_count") ? 1 : 0;
         return "https:" + anchorAttribute.get(imageIndex)

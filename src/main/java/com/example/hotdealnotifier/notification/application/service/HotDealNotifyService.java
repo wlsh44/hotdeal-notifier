@@ -25,7 +25,6 @@ public class HotDealNotifyService {
     public void notify(NewHotDealDetectedEvent event) {
         Map<HotDeal, List<User>> hotDealListMap = event.hotDealUserListMap();
         hotDealListMap.forEach((hotDeal, userList) -> {
-//            discordNotificationService.createMessage(hotDeal);
             discordNotificationService.sendNotification(HotDealInfo.from(hotDeal), getTargetList(userList));
         });
     }

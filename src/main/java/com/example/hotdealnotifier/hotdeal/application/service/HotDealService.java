@@ -21,7 +21,7 @@ import java.util.Map;
 
 //usecase
 @Service
-@Transactional
+@Transactional(noRollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class HotDealService implements HotDealUseCase {
 
@@ -37,29 +37,35 @@ public class HotDealService implements HotDealUseCase {
         if (newHotDealList.isEmpty()) {
             return;
         }
+
         List<User> userList = userPort.findAll();
         Map<HotDeal, List<User>> hotDealUserListMap = new HashMap<>();
-        newHotDealList.forEach(hotDeal -> {
-            for (User user : userList) {
-                List<Keyword> keywordList = keywordQueryPort.findAllByUserId(user.getId());
-                if (!isContainingKeyword(hotDeal, keywordList)) {
-                    continue;
-                }
-                addUserToHotDealUserMap(hotDeal, user, hotDealUserListMap);
-            }
-        });
+        newHotDealList.forEach(
+                hotDeal -> fillHotDealUserMapIfHotDealContainKeyword(hotDeal, userList, hotDealUserListMap)
+        );
+
         hotDealCommandPort.saveAll(newHotDealList);
         publisher.publishEvent(new NewHotDealDetectedEvent(hotDealUserListMap));
+    }
+
+    private void fillHotDealUserMapIfHotDealContainKeyword(HotDeal hotDeal, List<User> userList, Map<HotDeal, List<User>> hotDealUserListMap) {
+        for (User user : userList) {
+            List<Keyword> keywordList = keywordQueryPort.findAllByUserId(user.getId());
+            if (!isContainingKeyword(hotDeal, keywordList)) {
+                continue;
+            }
+            addUserToHotDealUserMap(hotDeal, user, hotDealUserListMap);
+        }
+    }
+
+    private boolean isContainingKeyword(HotDeal hotDeal, List<Keyword> keywordList) {
+        return keywordList.stream()
+                .anyMatch(keyword -> hotDeal.isContainingKeyword(keyword.getText()));
     }
 
     private void addUserToHotDealUserMap(HotDeal hotDeal, User user, Map<HotDeal, List<User>> hotDealUserListMap) {
         List<User> hotDealUserList = hotDealUserListMap.getOrDefault(hotDeal, new ArrayList<>());
         hotDealUserList.add(user);
         hotDealUserListMap.put(hotDeal, hotDealUserList);
-    }
-
-    private boolean isContainingKeyword(HotDeal hotDeal, List<Keyword> keywordList) {
-        return keywordList.stream()
-                .anyMatch(keyword -> hotDeal.isContainingKeyword(keyword.getText()));
     }
 }
