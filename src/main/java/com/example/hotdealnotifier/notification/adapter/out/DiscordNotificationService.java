@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +40,10 @@ public class DiscordNotificationService {
     }
 
     private void tagHotDealTargets(List<Target> targets, ThreadChannel thread) {
-        targets.forEach(target -> {
-            String userTag = DISCORD_TAG_FORMAT.formatted(target.getNotificationId());
-            thread.sendMessage(userTag).queue();
-        });
+        String tagMessage = targets.stream()
+                .map(target -> DISCORD_TAG_FORMAT.formatted(target.getNotificationId()))
+                .collect(Collectors.joining(", "));
+        thread.sendMessage(tagMessage).queue();
     }
 
     private ThreadChannel createTheadAndSendHotDealInfo(HotDealInfo hotDealInfo, TextChannel textChannel, MessageEmbed message) {

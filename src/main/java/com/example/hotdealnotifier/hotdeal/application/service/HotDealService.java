@@ -21,15 +21,15 @@ import java.util.Map;
 
 //usecase
 @Service
-@Transactional(noRollbackFor = Exception.class)
+@Transactional
 @RequiredArgsConstructor
 public class HotDealService implements HotDealUseCase {
 
     private final HotDealDetector hotDealDetector;
     private final KeywordQueryPort keywordQueryPort;
-    private final UserQueryPort userPort;
-    private final ApplicationEventPublisher publisher;
+    private final UserQueryPort userQueryPort;
     private final HotDealCommandPort hotDealCommandPort;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public void crawl() {
@@ -38,7 +38,7 @@ public class HotDealService implements HotDealUseCase {
             return;
         }
 
-        List<User> userList = userPort.findAll();
+        List<User> userList = userQueryPort.findAll();
         Map<HotDeal, List<User>> hotDealUserListMap = new HashMap<>();
         newHotDealList.forEach(
                 hotDeal -> fillHotDealUserMapIfHotDealContainKeyword(hotDeal, userList, hotDealUserListMap)

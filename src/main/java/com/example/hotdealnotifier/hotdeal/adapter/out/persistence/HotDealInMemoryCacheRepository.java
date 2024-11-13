@@ -1,4 +1,4 @@
-package com.example.hotdealnotifier.keyword.adapter.out.persistence;
+package com.example.hotdealnotifier.hotdeal.adapter.out.persistence;
 
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
