@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface KeywordQueryPort {
     List<Keyword> findAllByUserId(User.UserId userId);
+
+    boolean existsByKeywordAndUserId(Keyword keyword);
 }
