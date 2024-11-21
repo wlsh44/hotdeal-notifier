@@ -1,6 +1,5 @@
 package com.example.hotdealnotifier.hotdeal.crawler;
 
-import com.example.hotdealnotifier.hotdeal.crawler.fmkorea.FmKoreaHotDealCrawler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

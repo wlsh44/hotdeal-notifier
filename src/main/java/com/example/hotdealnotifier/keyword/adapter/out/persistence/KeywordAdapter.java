@@ -28,4 +28,9 @@ public class KeywordAdapter implements KeywordQueryPort, KeywordCommandPort {
         KeywordEntity keywordEntity = keywordJpaRepository.save(keywordMapper.mapToJpaEntity(keyword));
         return keywordMapper.mapToDomainEntity(keywordEntity);
     }
+
+    @Override
+    public void remove(String text, Long userId) {
+        keywordJpaRepository.deleteByTextAndUserId(text, userId);
+    }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface KeywordJpaRepository extends JpaRepository<KeywordEntity, Long> {
 
     List<KeywordEntity> findAllByUserId(Long userId);
+
+    void deleteByTextAndUserId(String text, Long userId);
 }

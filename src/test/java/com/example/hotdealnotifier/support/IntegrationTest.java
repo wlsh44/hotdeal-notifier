@@ -1,10 +1,10 @@
 package com.example.hotdealnotifier.support;
 
 import com.example.hotdealnotifier.hotdeal.crawler.HotDealDetector;
-import com.example.hotdealnotifier.hotdeal.crawler.arcalive.ArcaLiveHotDealCrawler;
-import com.example.hotdealnotifier.hotdeal.crawler.fmkorea.FmKoreaHotDealCrawler;
-import com.example.hotdealnotifier.hotdeal.crawler.inven.InvenHotDealCrawler;
-import com.example.hotdealnotifier.hotdeal.crawler.quasarzone.QuasarZoneHotDealCrawler;
+import com.example.hotdealnotifier.hotdeal.crawler.ArcaLiveHotDealCrawler;
+import com.example.hotdealnotifier.hotdeal.crawler.FmKoreaHotDealCrawler;
+import com.example.hotdealnotifier.hotdeal.crawler.InvenHotDealCrawler;
+import com.example.hotdealnotifier.hotdeal.crawler.QuasarZoneHotDealCrawler;
 import com.example.hotdealnotifier.support.db.DatabaseCleanerExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

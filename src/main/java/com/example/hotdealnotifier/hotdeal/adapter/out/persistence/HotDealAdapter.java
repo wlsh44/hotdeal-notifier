@@ -4,12 +4,10 @@ import com.example.hotdealnotifier.hotdeal.application.port.out.HotDealCommandPo
 import com.example.hotdealnotifier.hotdeal.application.port.out.HotDealQueryPort;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
-import com.example.hotdealnotifier.keyword.adapter.out.persistence.HotDealInMemoryCacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 //adapter
 @Component

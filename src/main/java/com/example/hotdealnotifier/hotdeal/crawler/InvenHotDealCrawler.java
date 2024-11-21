@@ -1,18 +1,17 @@
-package com.example.hotdealnotifier.hotdeal.crawler.inven;
+package com.example.hotdealnotifier.hotdeal.crawler;
 
-import com.example.hotdealnotifier.hotdeal.crawler.HotDealCrawler;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -29,6 +28,7 @@ public class InvenHotDealCrawler implements HotDealCrawler {
 
             return hotDealElementList.select("div.list-item").stream()
                     .map(this::createHotDeal)
+                    .flatMap(Optional::stream)
                     .toList();
         } catch (Exception e) {
             log.error("인벤 핫딜 크롤링 실패", e);
@@ -41,20 +41,25 @@ public class InvenHotDealCrawler implements HotDealCrawler {
         return Platform.INVEN;
     }
 
-    private HotDeal createHotDeal(Element hotDeal) {
-        String title = getTitle(hotDeal);
-        String url = getUrl(hotDeal);
-        String image = getImage(hotDeal);
-        String price = getPrice(hotDeal);
-        String shoppingMall = getShoppingMall(hotDeal);
-//        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
-        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
+    private Optional<HotDeal> createHotDeal(Element hotDeal) {
+        try {
+            String title = getTitle(hotDeal);
+            String url = getUrl(hotDeal);
+            String image = getImage(hotDeal);
+            String price = getPrice(hotDeal);
+            String shoppingMall = getShoppingMall(hotDeal);
+            log.debug("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
+            return Optional.of(HotDeal.of(title, url, price, image, shoppingMall, getPlatform()));
+        } catch (Exception e) {
+            log.warn("인벤 핫딜 파싱 실패", e);
+            return Optional.empty();
+        }
     }
 
     private String getImage(Element hotDeal) {
-        return hotDeal.select("a.thumbnail").first()
-                .select("img").first()
-                .attr("src");
+        Element img = hotDeal.select("a.thumbnail").first()
+                .select("img").first();
+        return Objects.isNull(img) ? null : img.attr("src");
     }
 
     private String getUrl(Element hotDeal) {

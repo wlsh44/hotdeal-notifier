@@ -29,6 +29,8 @@ dependencies {
 
 	implementation 'org.jsoup:jsoup:1.18.1'
 
+	implementation 'net.dv8tion:JDA:5.0.2'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 

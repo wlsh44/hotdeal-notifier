@@ -1,9 +1,8 @@
 package com.example.hotdealnotifier.hotdeal.crawler.inven;
 
+import com.example.hotdealnotifier.hotdeal.crawler.InvenHotDealCrawler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InvenHotDealCrawlerTest {
 

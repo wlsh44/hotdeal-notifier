@@ -1,6 +1,5 @@
-package com.example.hotdealnotifier.hotdeal.crawler.quasarzone;
+package com.example.hotdealnotifier.hotdeal.crawler;
 
-import com.example.hotdealnotifier.hotdeal.crawler.HotDealCrawler;
 import com.example.hotdealnotifier.hotdeal.domain.HotDeal;
 import com.example.hotdealnotifier.hotdeal.domain.Platform;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,10 +31,12 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
             Document document = Jsoup.connect(BASE_URL + "/bbs/qb_saleinfo").get();
 
             Elements hotDealElementList = document.select("div.market-type-list").first()
-                    .select("tbody");
+                    .select("tbody")
+                    .select("tr");
 
-            return hotDealElementList.select("tr").stream()
+            return hotDealElementList.stream()
                     .map(this::createHotDeal)
+                    .flatMap(Optional::stream)
                     .toList();
         } catch (Exception e) {
             log.error("퀘이사존 핫딜 크롤링 실패", e);
@@ -47,21 +49,37 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
         return Platform.QUASAR_ZONE;
     }
 
-    private HotDeal createHotDeal(Element hotDeal) {
-        String url = getUrl(hotDeal);
-        String image = getImage(hotDeal);
-        String shoppingMallAndTitle = getShoppingMallAndTitle(hotDeal);
+    private Optional<HotDeal> createHotDeal(Element hotDeal) {
+        try {
+            String title = getTitle(hotDeal);
+            String url = getUrl(hotDeal);
+            String image = getImage(hotDeal);
+            String price = getPrice(hotDeal);
+            String shoppingMall = getShoppingMall(hotDeal);
+            log.debug("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
+            return Optional.of(HotDeal.of(title, url, price, image, shoppingMall, getPlatform()));
+        } catch (Exception e) {
+            log.warn("퀘이사존 핫딜 파싱 실패", e);
+            return Optional.empty();
+        }
+    }
 
+    private String getTitle(Element hotDeal) {
+        String shoppingMallAndTitle = getShoppingMallAndTitle(hotDeal);
         Matcher matcher = pattern.matcher(shoppingMallAndTitle);
         if (!matcher.matches()) {
-            throw new RuntimeException("퀘이사존 쇼핑몰, 타이틀 파싱 실패: [xx] xxx 형식이 아님");
+            throw new RuntimeException("퀘이사존 쇼핑몰, 타이틀 파싱 실패: [xx] xxx 형식이 아님, title: " + shoppingMallAndTitle);
         }
+        return matcher.group(2);
+    }
 
-        String shoppingMall = matcher.group(1);
-        String title = matcher.group(2);
-        String price = getPrice(hotDeal);
-//        log.info("title: {}\nurl: {}\nimage: {}\nprice: {}\nshoppingMall: {}", title, url, image, price, shoppingMall);
-        return HotDeal.of(title, url, price, image, shoppingMall, getPlatform());
+    private String getShoppingMall(Element hotDeal) {
+        String shoppingMallAndTitle = getShoppingMallAndTitle(hotDeal);
+        Matcher matcher = pattern.matcher(shoppingMallAndTitle);
+        if (!matcher.matches()) {
+            throw new RuntimeException("퀘이사존 쇼핑몰, 타이틀 파싱 실패: [xx] xxx 형식이 아님, title: " + shoppingMallAndTitle);
+        }
+        return matcher.group(1);
     }
 
     private String getPrice(Element hotDeal) {
@@ -80,9 +98,9 @@ public class QuasarZoneHotDealCrawler implements HotDealCrawler {
     }
 
     private String getImage(Element hotDeal) {
-        return hotDeal.select("div.market-info-list")
-                .select("img").first()
-                .attr("src");
+        Element img = hotDeal.select("div.market-info-list")
+                .select("img").first();
+        return Objects.isNull(img) ? null : img.attr("src");
     }
 
     private String getUrl(Element hotDeal) {

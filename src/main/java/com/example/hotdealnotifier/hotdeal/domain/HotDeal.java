@@ -1,5 +1,6 @@
 package com.example.hotdealnotifier.hotdeal.domain;
 
+import com.example.hotdealnotifier.common.jpa.BaseEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

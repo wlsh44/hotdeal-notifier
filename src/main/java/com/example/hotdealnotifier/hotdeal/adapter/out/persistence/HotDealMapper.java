@@ -33,12 +33,4 @@ public class HotDealMapper {
                 hotDealEntity.getPlatform()
         );
     }
-
-    public List<HotDeal> findAllCacheBy(Platform platform) {
-        return null;
-    }
-
-    public void saveHotDealCacheList(Platform platform, List<HotDeal> newHotDealList) {
-
-    }
 }
