@@ -24,6 +24,11 @@ public class KeywordAdapter implements KeywordQueryPort, KeywordCommandPort {
     }
 
     @Override
+    public boolean existsByKeywordAndUserId(Keyword keyword) {
+        return keywordJpaRepository.existsByTextAndUserId(keyword.getText(), keyword.getUserId());
+    }
+
+    @Override
     public Keyword save(Keyword keyword) {
         KeywordEntity keywordEntity = keywordJpaRepository.save(keywordMapper.mapToJpaEntity(keyword));
         return keywordMapper.mapToDomainEntity(keywordEntity);
